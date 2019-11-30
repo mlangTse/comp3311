@@ -1,0 +1,19 @@
+#!/bin/sh
+
+DIR="/home/class/data/"
+Usage="Usage: $0 File"
+
+case $# in
+1) ;;
+*) echo "$Usage" ; exit 1 ;;
+esac
+
+file="$1"
+
+if [ ! -r "$DIR/$file" ]
+then
+	echo "No such file: $file"
+	exit 1
+fi
+
+cp -i "$DIR/$file" "./$file"

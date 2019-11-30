@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/firefox -geometry 900x980 file:///home/class/public_html/index.html &

@@ -1,0 +1,37 @@
+#!/bin/sh
+
+case $# in
+1) ;;
+*) echo "Usage: $0 q[123456]"; exit 1 ;;
+esac
+
+case $1 in
+q[123456]) ;;
+*) echo "Usage: $0 q[123456]"; exit 1 ;;
+esac
+
+OBS="testing/$1.observed"
+EXP="testing/$1.expected"
+DIF="testing/$1.diffs"
+
+grep -i "$1" testing/tests | (sqlite3 footy.db 2>&1) > $OBS
+
+diff -wi $OBS $EXP > $DIF
+
+echo ===== Test for $1 =====
+grep "$1" tests
+
+if [ ! -s $DIF ]
+then
+	echo OK
+else
+	echo FAILED
+	echo ""
+	echo "===== Your output ====="
+	cat $OBS
+	echo ""
+	echo "===== Expected output ====="
+	cat $EXP
+	echo ""
+	echo "See the file $DIF for diff output"
+fi

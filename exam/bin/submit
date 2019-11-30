@@ -1,0 +1,62 @@
+#!/bin/sh
+
+usage="Usage: submit [Question]"
+
+DIR=".submissions"
+
+case $# in
+0)      # show summary of submissions
+
+        if [ ! -d $DIR ]
+        then
+            echo "submit - no submission directory"
+            exit 1
+        fi
+
+        cd $DIR
+        for t in q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 q11 q12
+        do
+            list=`ls $t.* 2>/dev/null`
+            if [ ! -n "$list" ]
+            then
+                echo "Question $t: no submissions"
+            else
+                echo "Question $t submissions (most recent first):"
+                ls -lt $list
+            fi
+        done
+        exit 0
+        ;;
+
+1)      q="$1" ;;
+
+*)      echo $usage ; exit 1 ;;
+esac
+
+case "$q" in
+q[123456]) file="$q.sql" ;;
+q7)        file="$q.png" ;;
+q8|q9|q10|q11|q12)
+           file="$q.txt" ;;
+*)         echo "File must be one of q1, q2, q3, ... q11, q12"
+           echo $usage
+           exit 1
+           ;;
+esac
+
+if [ ! -r "$file" ]
+then
+    echo "file $file does not exist"
+    exit 1
+fi
+
+if [ ! -d $DIR ] 
+then
+    mkdir $DIR || exit 1
+fi
+
+cp "$file" "$DIR/$file.$$" || echo "Submission failed"
+echo submit "$file.$$" `ls -l "$file"` >> $HOME/.logs
+
+echo Submission of "$file" accepted.
+
